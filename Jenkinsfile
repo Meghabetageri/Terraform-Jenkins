@@ -12,7 +12,7 @@ pipeline {
                  script{
                         dir("terraform")
                         {
-                            git branch: 'main', url: 'https://github.com/aishwarya-9patil/nikterra-jenkin.git'
+                            git branch: 'main', url: 'https://github.com/Meghabetageri/Terraform-Jenkins.git'
                         }
                     }
                 }
