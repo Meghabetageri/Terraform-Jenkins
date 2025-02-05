@@ -1,19 +1,19 @@
 pipeline {
-    agent any
-    environment {
-        AWS_ACCESS_KEY_ID = credentials('aws-access-key-id')
-        AWS_SECRET_ACCESS_KEY = credentials('aws-secret-access-key')
+
+        environment {
+        AWS_ACCESS_KEY_ID     = credentials('AWS_ACCESS_KEY_ID')
+        AWS_SECRET_ACCESS_KEY = credentials('AWS_SECRET_ACCESS_KEY')
     }
+
+   agent  any
     stages {
-        stage('Checkout') {
+        stage('checkout') {
             steps {
-                checkout scm
+                 script{
+                        dir("terraform")
+                        {
+                            git branch: 'main', url: 'https://github.com/aishwarya-9patil/nikterra-jenkin.git'
+                        }
+                    }
+                }
             }
-        }
-        stage('Deploy') {
-            steps {
-                sh 'terraform apply'
-            }
-        }
-    }
-}
