@@ -109,21 +109,3 @@ resource "aws_security_group" "TF_SG" {
   }
 }
 
-// Create an EC2 Instance
-resource "aws_instance" "my_instance" {
-  ami                    = "ami-05fa46471b02db0ce"  # Update to your desired AMI
-  instance_type          = "t2.medium"                # Change this to your desired instance type
-  key_name               = "aish-key"                 # Ensure you create or use an existing key pair
-
-  subnet_id             = aws_subnet.public_subnet.id   # Reference the public subnet
-  vpc_security_group_ids = [aws_security_group.TF_SG.id]  # Use the security group ID
-
-  tags = {
-    Name = "terraform-server"
-  }
-}
-
-// Output the public IP of the instance
-output "instance_ip" {
-  value = aws_instance.my_instance.public_ip
-}
