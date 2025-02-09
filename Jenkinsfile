@@ -12,7 +12,7 @@ pipeline {
                 script {
                     dir("terraform") {
                         // Checkout the code from the GitHub repository
-                        git branch: 'main', url: ''
+                        git branch: 'main', url: 'https://github.com/Meghabetageri/Terraform-Jenkins.git'
                     }
                 }
             }
