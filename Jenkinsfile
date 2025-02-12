@@ -14,10 +14,8 @@ pipeline {
         stage('Checkout') {
             steps {
                 script {
-                    dir("terraform") {
-                        // Checkout the code from the GitHub repository
-                        git branch: 'main', url: 'https://github.com/Meghabetageri/Terraform-Jenkins.git'
-                    }
+                    // Checkout the code from the GitHub repository
+                    git branch: 'main', url: 'https://github.com/Meghabetageri/Terraform-Jenkins.git'
                 }
             }
         }
@@ -26,7 +24,9 @@ pipeline {
             steps {
                 script {
                     // Initialize Terraform
-                    sh 'terraform init'
+                    dir('terraform') {
+                        sh 'terraform init'
+                    }
                 }
             }
         }
@@ -35,8 +35,10 @@ pipeline {
             steps {
                 script {
                     // Run terraform plan and output the plan to a file
-                    sh 'terraform plan -out=tfplan'
-                    sh 'terraform show -no-color tfplan > tfplan.txt'
+                    dir('terraform') {
+                        sh 'terraform plan -out=tfplan'
+                        sh 'terraform show -no-color tfplan > tfplan.txt'
+                    }
                 }
             }
         }
@@ -61,7 +63,9 @@ pipeline {
             steps {
                 script {
                     // Apply the terraform plan with correct arguments
-                    sh 'terraform apply -input=false --auto-approve tfplan'
+                    dir('terraform') {
+                        sh 'terraform apply -input=false --auto-approve tfplan'
+                    }
                 }
             }
         }
