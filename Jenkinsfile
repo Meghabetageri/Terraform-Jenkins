@@ -6,6 +6,10 @@ pipeline {
         AWS_SECRET_ACCESS_KEY = credentials('AWS_SECRET_ACCESS_KEY')
     }
 
+    parameters {
+        booleanParam(name: 'autoApprove', defaultValue: false, description: 'Automatically approve Terraform Apply')
+    }
+
     stages {
         stage('Checkout') {
             steps {
@@ -22,7 +26,7 @@ pipeline {
             steps {
                 script {
                     // Initialize Terraform
-                    sh 'cd terraform && terraform init'
+                    sh 'terraform init'
                 }
             }
         }
@@ -31,8 +35,8 @@ pipeline {
             steps {
                 script {
                     // Run terraform plan and output the plan to a file
-                    sh 'cd terraform && terraform plan -out=tfplan'
-                    sh 'cd terraform && terraform show -no-color tfplan > tfplan.txt'
+                    sh 'terraform plan -out=tfplan'
+                    sh 'terraform show -no-color tfplan > tfplan.txt'
                 }
             }
         }
@@ -43,7 +47,6 @@ pipeline {
                     equals expected: true, actual: params.autoApprove
                 }
             }
-
             steps {
                 script {
                     // Read the plan file and ask for user input
@@ -58,7 +61,7 @@ pipeline {
             steps {
                 script {
                     // Apply the terraform plan with correct arguments
-                    sh 'cd terraform && terraform apply -input=false --auto-approve tfplan'
+                    sh 'terraform apply -input=false --auto-approve tfplan'
                 }
             }
         }
