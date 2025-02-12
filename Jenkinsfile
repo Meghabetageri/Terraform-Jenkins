@@ -54,7 +54,7 @@ pipeline {
                     // Read the plan file and ask for user input
                     def plan = readFile('terraform/tfplan.txt')
                     input message: "Do you want to apply the plan?",
-                    parameters: [text(name: 'Plan', description: 'Please review the plan', defaultValue: plan)]
+                          parameters: [text(name: 'Plan', description: 'Please review the plan', defaultValue: plan)]
                 }
             }
         }
@@ -85,3 +85,4 @@ pipeline {
         }
     }
 }
+
