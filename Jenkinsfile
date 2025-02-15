@@ -1,20 +1,20 @@
 pipeline {
-    agent any
 
+    parameters {
+        booleanParam(name: 'autoApprove', defaultValue: false, description: 'Automatically run apply after generating plan?')
+    } 
     environment {
         AWS_ACCESS_KEY_ID     = credentials('AWS_ACCESS_KEY_ID')
         AWS_SECRET_ACCESS_KEY = credentials('AWS_SECRET_ACCESS_KEY')
     }
 
-    parameters {
-        booleanParam(name: 'autoApprove', defaultValue: false, description: 'Automatically approve Terraform Apply')
-    }
-
+   agent  any
     stages {
-        stage('Checkout') {
+        stage('checkout') {
             steps {
-                script {
-                    // Checkout the code from the GitHub repository
+                 script{
+                        dir("terraform")
+                        {
                     git branch: 'main', url: 'https://github.com/Meghabetageri/Terraform-Jenkins.git'
                 }
             }
