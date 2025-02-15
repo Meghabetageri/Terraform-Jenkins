@@ -15,75 +15,40 @@ pipeline {
                  script{
                         dir("terraform")
                         {
-                    git branch: 'main', url: 'https://github.com/Meghabetageri/Terraform-Jenkins.git'
-                }
-            }
-        }
-
-        stage('Terraform Init') {
-            steps {
-                script {
-                    // Initialize Terraform
-                    dir('terraform') {
-                        sh 'terraform init'
+                            git "https://github.com/yeshwanthlm/Terraform-Jenkins.git"
+                        }
                     }
                 }
             }
-        }
 
-        stage('Terraform Plan') {
+        stage('Plan') {
             steps {
-                script {
-                    // Run terraform plan and output the plan to a file
-                    dir('terraform') {
-                        sh 'terraform plan -out=tfplan'
-                        sh 'terraform show -no-color tfplan > tfplan.txt'
-                    }
-                }
+                sh 'pwd;cd terraform/ ; terraform init'
+                sh "pwd;cd terraform/ ; terraform plan -out tfplan"
+                sh 'pwd;cd terraform/ ; terraform show -no-color tfplan > tfplan.txt'
             }
         }
-
         stage('Approval') {
-            when {
-                not {
-                    equals expected: true, actual: params.autoApprove
-                }
-            }
-            steps {
-                script {
-                    // Read the plan file and ask for user input
-                    def plan = readFile('terraform/tfplan.txt')
+           when {
+               not {
+                   equals expected: true, actual: params.autoApprove
+               }
+           }
+
+           steps {
+               script {
+                    def plan = readFile 'terraform/tfplan.txt'
                     input message: "Do you want to apply the plan?",
-                          parameters: [text(name: 'Plan', description: 'Please review the plan', defaultValue: plan)]
-                }
-            }
-        }
+                    parameters: [text(name: 'Plan', description: 'Please review the plan', defaultValue: plan)]
+               }
+           }
+       }
 
-        stage('Terraform Apply') {
+        stage('Apply') {
             steps {
-                script {
-                    // Apply the terraform plan with correct arguments
-                    dir('terraform') {
-                        sh 'terraform apply -input=false --auto-approve tfplan'
-                    }
-                }
+                sh "pwd;cd terraform/ ; terraform apply -input=false tfplan"
             }
         }
-    } // End of stages block
+    }
 
-    post {
-        always {
-            echo 'Cleaning up...'
-        }
-
-        success {
-            echo 'Pipeline completed successfully!'
-        }
-
-        failure {
-            echo 'Pipeline failed. Please check the error logs above for more details.'
-        }
-    } // End of post block
-} // End of pipeline block
-
-
+  }
