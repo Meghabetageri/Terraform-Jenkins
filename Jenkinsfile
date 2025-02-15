@@ -69,6 +69,7 @@ pipeline {
                 }
             }
         }
+    } // End of stages block
 
     post {
         always {
@@ -82,6 +83,7 @@ pipeline {
         failure {
             echo 'Pipeline failed. Please check the error logs above for more details.'
         }
-    }
-}
+    } // End of post block
+} // End of pipeline block
+
 
